@@ -11,3 +11,6 @@ wheels/
 
 # DB SQL
 *.sqlite3
+
+# Tailwind CSS
+demoproject/static/css/tailwindcss
