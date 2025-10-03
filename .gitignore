@@ -12,3 +12,4 @@ wheels/
 # DB SQL
 *.sqlite3
 demoproject/static/css/tailwindcss
+demoproject/static/css/output.css
