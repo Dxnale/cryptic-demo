@@ -1,1 +1,1 @@
-demoproject/static/css/tailwindcss filter=lfs diff=lfs merge=lfs -text
+demoproject/static/css/tailwindcss/* filter=lfs diff=lfs merge=lfs -text
