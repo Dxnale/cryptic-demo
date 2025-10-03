@@ -10,4 +10,5 @@ wheels/
 .venv
 
 # DB SQL
-*.sqlite3demoproject/static/css/tailwindcss
+*.sqlite3
+demoproject/static/css/tailwindcss
