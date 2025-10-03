@@ -1,0 +1,17 @@
+<div class="{{ class }}">
+    {% if header %}
+    <div class="{{ header_class }}">
+        {{ header }}
+    </div>
+    {% endif %}
+    {% if content %}
+    <div class="{{ content_class }}">
+        {{ content }}
+    </div>
+    {% endif %}
+    {% if footer %}
+    <div class="{{ footer_class }}">
+        {{ footer }}
+    </div>
+    {% endif %}
+</div>
