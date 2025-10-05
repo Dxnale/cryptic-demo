@@ -1,13 +1,14 @@
 {% extends "layout.html" %}
 {% block title %}Home {{ block.super }}{% endblock %}
 {% block content %}
+<main class="max-w-4xl my-3 py-8 mx-auto font-mono">
 <section class="mb-16">
     <div class="max-w-2xl mx-auto">
-        <div class="bg-black/80 border-2 border-green-400 p-6 mb-8">
+        <div class="card bg-black/80 border-2 border-green-400 p-6 mb-8">
             <h2 class="font-mono text-l font-bold text-green-400 mb-4">&gt; cryptic analyze "8743b52063cd84097a65d1633f5c74f5"</h2>
-            <div class="text-green-300 text-sm leading-2 space-y-2">
+            <div class="card-body text-green-300 text-sm leading-2 space-y-2">
                 <p>&gt; Analizando: 8743b52063cd84097a65d1633f5c74f5</p>
-                <p>&gt; =============================================================</p>
+                <p>&gt; ======================================</p>
                 <p>&gt; 8743b52063cd84097a65d1633f5c74f5</p>
                 <p>&gt;   Estado: Protegido</p>
                 <p>&gt;   Sensibilidad: Sensibilidad media</p>
@@ -23,7 +24,11 @@
             </div>
         </div>
         <div class="text-center">
-            {% include "includes/button.html" with text="&gt; run_demo.py" to="login" %}
+            {% if request.user.is_authenticated %}
+                {% include "includes/button.html" with text="&gt; run_demo.py" to="run_demo" %}
+            {% else %}
+                {% include "includes/button.html" with text="&gt; run_demo.py" to="login" %}
+            {% endif %}
             <section>
                 <h2 class="font-mono text-xl font-bold text-green-400 mb-8 text-center my-9">
                     &gt; echo "Bienvenido a Cryptic"
@@ -35,4 +40,5 @@
 <!-- Featured Posts -->
 {% include "includes/index_post_cards.html" with btn_1="Install"  btn_2="Analyze" btn_3="Verify" btn_4="Batch"%}
 <!-- end Featured Posts -->
+</main>
 {% endblock %}

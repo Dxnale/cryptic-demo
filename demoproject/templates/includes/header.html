@@ -1,0 +1,36 @@
+<header class="border-b-2 border-green-400 bg-black/90 relative">
+    <div class="max-w-4xl mx-auto px-6 py-8 relative">
+        <div class="absolute right-6 top-6">
+            {% if request.user.is_authenticated %}
+            <div class="dropdown dropdown-hover dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-sm md:btn-md m-0 rounded-box border-2 border-green-400 bg-black/60 text-green-400 hover:text-black hover:bg-green-400 font-mono">
+                    {{ request.user.username }}
+                </div>
+                <ul tabindex="0" class="dropdown-content menu rounded-box z-10 w-56 p-2 shadow-sm border border-green-400/40 bg-base-200">
+                    <li>
+                        <a href="{% url 'password_change' %}" class="font-mono cursor-pointer">Cambiar contraseña</a>
+                    </li>
+                    <li role="button" class="font-mono cursor-pointer">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="font-mono text-xs underline">
+                    Login
+                </a>
+            {% endif %}
+        </div>
+        <div class="text-center font-mono">
+            {% include "includes/ascii.html" %}
+            <h1 class="font-mono text-2xl md:text-4xl font-bold text-green-400 mb-2 glitch">
+                Python Hash Identifier<span class="blink-cursor bg-green-400 w-3 h-5 inline-block ml-1"/>
+            </h1>
+            <p class="font-mono text-sm text-green-300">&gt; Inicializando paquetes...</p>
+            <p class="font-mono text-xs text-green-500 mt-2">[STATUS] Cryptic v1.0.0 listo para usar</p>
+        </div>
+    </div>
+</header>

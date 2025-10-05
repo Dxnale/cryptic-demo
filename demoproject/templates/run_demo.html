@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Run Demo {{ block.super }}{% endblock %}
+{% block content %}
+<section class="mb-16">
+  <div class="max-w-2xl mx-auto">
+    <div class="card bg-black/80 border-2 border-green-400 p-6 mb-8">
+      <h2 class="font-mono text-xl font-bold text-green-400 mb-4">&gt; run_demo.py</h2>
+      <div class="card-body text-green-300 text-sm leading-6 space-y-3">
+        <p>&gt; Usuario: <span class="text-green-200 font-bold">{{ request.user.username }}</span></p>
+        <p>&gt; Estado: Autenticado correctamente.</p>
+        <p>&gt; Esta es una vista protegida de demostración.</p>
+      </div>
+    </div>
+    <div class="text-center">
+      <a href="{% url 'home' %}" class="inline-block rounded-box cursor-pointer bg-green-600 hover:bg-green-500 text-black font-mono font-bold px-6 py-2 border-2 border-green-400 transition-all duration-200 hover:shadow-lg hover:shadow-green-400/50">&lt; Volver</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
