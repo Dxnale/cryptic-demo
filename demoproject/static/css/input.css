@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 @import "tailwindcss";
 @plugin "./daisyui.js";
 @source "../../templates";
@@ -75,7 +76,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: "Space Grotesk", sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -120,7 +121,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -142,3 +143,13 @@
   }
 }
 
+#ascii {
+  transform: scale(1);
+  transform-origin: top left;
+}
+
+@media (max-width: 640px) {
+    #ascii {
+        transform: scale(0.5);
+    }
+}

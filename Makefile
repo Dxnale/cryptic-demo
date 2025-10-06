@@ -56,7 +56,7 @@ dev:
 	@cd demoproject/static/css && ./tailwindcss -i input.css -o output.css --watch &
 	@echo "$(YELLOW) Iniciando Django development server...$(NC)"
 	@echo "$(YELLOW) Directorio: demoproject$(NC)"
-	@cd demoproject && uv run manage.py runserver
+	@cd demoproject && uv run manage.py runserver 0.0.0.0:8000
 
 cleanup:
 	@echo "$(YELLOW) Deteniendo procesos de desarrollo huérfanos...$(NC)"
