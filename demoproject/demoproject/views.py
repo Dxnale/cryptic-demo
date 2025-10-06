@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
-from django.utils.html import escape, mark_safe
 from .utils import get_help_text, format_analysis_output
 
 try:
@@ -63,10 +62,7 @@ def execute_command(request):
                 'success': False,
                 'output': f'Error: Comando demasiado largo (máximo {max_length} caracteres)',
                 'error': True
-            })
-
-        command = mark_safe(escape(command))
-            
+            })            
         parts = command.split(maxsplit=2)
 
         if len(parts) == 1 and parts[0].lower() in ['help', '--help', '-h']:
@@ -83,7 +79,7 @@ def execute_command(request):
                 'error': True
             })
 
-        if parts[0].lower() != 'cryptic' or parts[1].lower() != 'analyze' or parts[1].lower() != 'verify':
+        if parts[0].lower() != 'cryptic' or parts[1].lower() != 'analyze':
             return JsonResponse({
                 'success': False,
                 'output': 'Error: Comando no válido\nEscribe "help" para más información',
