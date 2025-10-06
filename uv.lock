@@ -35,7 +35,7 @@ wheels = [
 [[package]]
 name = "cryptic"
 version = "0.1.0"
-source = { path = "../libprueba/dist/cryptic-0.1.0-py3-none-any.whl" }
+source = { path = "cryptic/dist/cryptic-0.1.0-py3-none-any.whl" }
 dependencies = [
     { name = "click" },
     { name = "pyyaml" },
@@ -68,7 +68,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cryptic", path = "../libprueba/dist/cryptic-0.1.0-py3-none-any.whl" },
+    { name = "cryptic", path = "cryptic/dist/cryptic-0.1.0-py3-none-any.whl" },
     { name = "django", specifier = ">=5.2.7" },
     { name = "django-ratelimit", specifier = ">=4.1.0" },
 ]
