@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-cryptic = { path = "../libprueba/dist/cryptic-0.1.0-py3-none-any.whl" }
+cryptic = { path = "cryptic/dist/cryptic-0.1.0-py3-none-any.whl" }
