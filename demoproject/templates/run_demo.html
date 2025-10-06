@@ -159,14 +159,45 @@
                     body: JSON.stringify({ command: command })
                 });
 
-                const data = await response.json();
+                const contentType = response.headers.get('content-type') || '';
+                const retryAfter = response.headers.get('Retry-After');
+                let data = null;
 
-                // Mostrar output
-                if (data.output) {
+                if (contentType.includes('application/json')) {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        data = null; // Evita romper si el cuerpo no es JSON válido
+                    }
+                }
+
+                // Manejo explícito de rate limiting
+                if (response.status === 429) {
+                    const message = (data && data.output)
+                        ? data.output
+                        : `⚠️ Límite de solicitudes excedido.\n\nPor seguridad, hemos limitado temporalmente las peticiones. ${retryAfter ? `Intenta nuevamente en ~${retryAfter} segundos.` : 'Espera unos segundos y vuelve a intentarlo.'}`;
+                    message.split('\n').forEach(line => addToTerminal(line, false, true));
+                    addToTerminal('', false);
+                    return;
+                }
+
+                // Otros estados no OK (p.ej., 401/403/500)
+                if (!response.ok) {
+                    const fallback = `Error ${response.status}: ${response.statusText || 'Solicitud fallida'}`;
+                    const message = (data && data.output) ? data.output : fallback;
+                    message.split('\n').forEach(line => addToTerminal(line, false, true));
+                    addToTerminal('', false);
+                    return;
+                }
+
+                // OK: mostrar output si existe
+                if (data && data.output) {
                     const outputLines = data.output.split('\n');
                     outputLines.forEach(line => {
-                        addToTerminal(line, false, data.error);
+                        addToTerminal(line, false, !!(data && data.error));
                     });
+                } else {
+                    addToTerminal('Operación completada.', false, false);
                 }
 
                 // Agregar línea en blanco después del output

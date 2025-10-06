@@ -41,8 +41,25 @@ def run_demo(request):
 
 @login_required
 @require_http_methods(["POST"])
-@ratelimit(key='user', rate='30/m', method='POST', block=True)
+@ratelimit(key='user', rate='30/m', method='POST', block=False)
 def execute_command(request):
+    # Respuesta clara y segura cuando se excede el rate limit
+    if getattr(request, 'limited', False):
+        logger.warning(f"Rate limit excedido por usuario {request.user.username}")
+        response = JsonResponse({
+            'success': False,
+            'error': True,
+            'output': (
+                '⚠️ Límite de solicitudes excedido.\n\n'
+                'Por seguridad, hemos limitado temporalmente las peticiones. '
+                'Espera unos segundos y vuelve a intentarlo.\n\n'
+                'Si el problema persiste o necesitas mayor capacidad, contacta al administrador.'
+            )
+        })
+        # HTTP 429 Too Many Requests con cabecera de reintento sugerido
+        response.status_code = 429
+        response['Retry-After'] = '60'
+        return response
     try:
         data = json.loads(request.body)
         command = data.get('command', '').strip()
