@@ -23,4 +23,5 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path('', views.home, name='home'),
     path('run-demo/', views.run_demo, name='run_demo'),
+    path('api/execute/', views.execute_command, name='execute_command'),
 ]

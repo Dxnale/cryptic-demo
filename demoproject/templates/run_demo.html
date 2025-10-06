@@ -1,19 +1,260 @@
 {% extends "layout.html" %}
-{% block title %}Run Demo {{ block.super }}{% endblock %}
+{% load static %}
+
+{% block title %}Terminal{% endblock %}
+
 {% block content %}
-<section class="mb-16">
-  <div class="max-w-2xl mx-auto">
-    <div class="card bg-black/80 border-2 border-green-400 p-6 mb-8">
-      <h2 class="font-mono text-xl font-bold text-green-400 mb-4">&gt; run_demo.py</h2>
-      <div class="card-body text-green-300 text-sm leading-6 space-y-3">
-        <p>&gt; Usuario: <span class="text-green-200 font-bold">{{ request.user.username }}</span></p>
-        <p>&gt; Estado: Autenticado correctamente.</p>
-        <p>&gt; Esta es una vista protegida de demostración.</p>
-      </div>
+<main class="max-w-4xl my-3 py-8 mx-auto font-mono">
+    <!-- Terminal -->
+    <div class="card bg-neutral text-neutral-content shadow-2xl">
+        <div class="card-body p-0">
+            <!-- Terminal header -->
+            <div class="bg-base-300 px-4 py-2 flex items-center gap-2 rounded-t-2xl border-b border-base-content/10">
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 rounded-full bg-error"></div>
+                    <div class="w-3 h-3 rounded-full bg-warning"></div>
+                    <div class="w-3 h-3 rounded-full bg-success"></div>
+                </div>
+                <span class="text-sm font-mono ml-2">cryptic-terminal</span>
+            </div>
+
+            <!-- Terminal output -->
+            <div id="terminal-output" class="font-mono text-sm p-4 h-96 overflow-y-auto bg-neutral">
+                <div class="text-success">
+                    Cryptic Terminal v0.1.0
+                    <br>Herramienta de detección y análisis de datos sensibles
+                    <br>
+                    <br>Escribe 'cryptic analyze "tu_texto"' para comenzar
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+            <!-- Terminal input -->
+            <div class="bg-neutral px-4 py-3 flex items-center gap-2 border-t border-base-content/10">
+                <span class="text-success font-mono">$</span>
+                <input 
+                    type="text" 
+                    id="terminal-input"
+                    class="input input-ghost w-full font-mono text-sm focus:outline-none bg-transparent"
+                    placeholder="Escribe tu comando aquí..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading-indicator" class="hidden px-4 py-2 bg-neutral border-t border-base-content/10">
+                <div class="flex items-center gap-2 text-info">
+                    <span class="loading loading-spinner loading-sm"></span>
+                    <span class="text-sm font-mono">Ejecutando...</span>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="text-center">
-      <a href="{% url 'home' %}" class="inline-block rounded-box cursor-pointer bg-green-600 hover:bg-green-500 text-black font-mono font-bold px-6 py-2 border-2 border-green-400 transition-all duration-200 hover:shadow-lg hover:shadow-green-400/50">&lt; Volver</a>
+    {% if not cryptic_available %}
+    <div class="alert alert-warning mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span><strong>Advertencia:</strong> La librería Cryptic no está instalada. Los comandos no funcionarán hasta que se instale.</span>
     </div>
-  </div>
-</section>
+    {% endif %}
+    <!-- Ejemplos rápidos -->
+    <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-3">⚡ Ejemplos Rápidos</h3>
+        <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm btn-outline example-btn" data-command='cryptic analyze "juan.perez@empresa.cl"'>
+                📧 Email
+            </button>
+            <button class="btn btn-sm btn-outline example-btn" data-command='cryptic analyze "12.345.678-5"'>
+                🆔 RUT Chileno
+            </button>
+            <button class="btn btn-sm btn-outline example-btn" data-command='cryptic analyze "4111-1111-1111-1111"'>
+                💳 Tarjeta
+            </button>
+            <button class="btn btn-sm btn-outline example-btn" data-command='cryptic analyze "+56912345678"'>
+                📱 Teléfono
+            </button>
+            <button class="btn btn-sm btn-outline example-btn" data-command='cryptic analyze "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5NU"'>
+                🔒 Hash
+            </button>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalOutput = document.getElementById('terminal-output');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const exampleButtons = document.querySelectorAll('.example-btn');
+
+        // Historial de comandos
+        let commandHistory = [];
+        let historyIndex = -1;
+
+        // Función para agregar output al terminal
+        function addToTerminal(content, isCommand = false, isError = false) {
+            const line = document.createElement('div');
+            
+            if (isCommand) {
+                line.innerHTML = `<span class="text-success">$ </span>${escapeHtml(content)}`;
+            } else {
+                const colorClass = isError ? 'text-error' : 'text-base-content';
+                line.className = colorClass;
+                line.textContent = content;
+            }
+            
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        // Función para escapar HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Función para limpiar la terminal
+        function clearTerminal() {
+            terminalOutput.innerHTML = `
+                <div class="text-success">
+                    Cryptic Terminal v0.1.0
+                    <br>Herramienta de detección y análisis de datos sensibles
+                    <br>
+                    <br>Escribe 'cryptic analyze "tu_texto"' para comenzar
+                    <br>
+                    <br>
+                </div>
+            `;
+        }
+
+        // Ejecutar comando
+        async function executeCommand(command) {
+            // Agregar comando al historial
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+
+            // Mostrar comando en terminal
+            addToTerminal(command, true);
+
+            // Comando especial: clear
+            if (command.trim().toLowerCase() === 'clear') {
+                clearTerminal();
+                return;
+            }
+
+            // Mostrar loading
+            loadingIndicator.classList.remove('hidden');
+            terminalInput.disabled = true;
+
+            try {
+                const response = await fetch('{% url "execute_command" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ command: command })
+                });
+
+                const data = await response.json();
+
+                // Mostrar output
+                if (data.output) {
+                    const outputLines = data.output.split('\n');
+                    outputLines.forEach(line => {
+                        addToTerminal(line, false, data.error);
+                    });
+                }
+
+                // Agregar línea en blanco después del output
+                addToTerminal('', false);
+
+            } catch (error) {
+                addToTerminal(`Error de conexión: ${error.message}`, false, true);
+                addToTerminal('', false);
+            } finally {
+                // Ocultar loading
+                loadingIndicator.classList.add('hidden');
+                terminalInput.disabled = false;
+                terminalInput.focus();
+            }
+        }
+
+        // Event listener para el input
+        terminalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim();
+                if (command) {
+                    executeCommand(command);
+                    this.value = '';
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    this.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    this.value = '';
+                }
+            }
+        });
+
+        // Event listeners para botones de ejemplo
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const command = this.getAttribute('data-command');
+                terminalInput.value = command;
+                terminalInput.focus();
+            });
+        });
+
+        // Focus en el input al cargar
+        terminalInput.focus();
+
+        // Focus en el input al hacer click en el output
+        terminalOutput.addEventListener('click', function() {
+            terminalInput.focus();
+        });
+    });
+</script>
+
+<style>
+    /* Estilos personalizados para el terminal */
+    #terminal-output::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #terminal-output::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #terminal-output::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+    }
+
+    #terminal-output::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Animación de cursor en el input */
+    #terminal-input {
+        caret-color: #10b981;
+    }
+
+    /* Prevenir selección del prompt */
+    #terminal-output span.text-success {
+        user-select: none;
+    }
+</style>
 {% endblock %}
