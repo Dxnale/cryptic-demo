@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% load form_extras %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<main class="max-w-4xl my-3 py-8 mx-auto px-60 font-mono">
+  <div class="card flex flex-col gap-4 rounded-box border-2 border-green-400 p-6 mb-8">
+    <h1 class="text-3xl font-bold">Registro</h1>
+
+    {% if messages %}
+      <div class="space-y-2">
+        {% for message in messages %}
+          <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %} p-3 rounded">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      
+      {% for field in form %}
+        <div class="form-group{% if field.errors %} has-error{% endif %}">
+          <label class="label">
+            <span class="label-text">
+              {{ field.label_tag }}
+              {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+            </span>
+          </label>
+          
+          {% if field.errors %}
+            {{ field|add_class:"input input-bordered input-error w-full" }}
+            <div class="text-red-500 text-sm mt-1">
+              {{ field.errors|join:", " }}
+            </div>
+          {% else %}
+            {{ field|add_class:"input input-bordered w-full" }}
+          {% endif %}
+          
+          {% if field.help_text %}
+            <div class="text-sm text-gray-500 mt-1">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="mt-6">
+        <button type="submit" class="w-full btn btn-outline border-green-400 hover:bg-green-500 hover:text-white">
+          Registrarse
+        </button>
+      </div>
+    </form>
+
+    <div class="divider">¿Ya tienes una cuenta?</div>
+    
+    <a href="{% url 'login' %}" class="btn btn-ghost text-green-400 hover:text-green-500">
+      Iniciar sesión
+    </a>
+  </div>
+</main>
+{% endblock %}
