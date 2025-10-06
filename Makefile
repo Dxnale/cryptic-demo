@@ -25,6 +25,7 @@ start:
 	else \
 		echo "$(GREEN)  uv ya está instalado$(NC)"; \
 	fi
+	@uv add ../libprueba/dist/cryptic-0.1.0-py3-none-any.whl
 	@echo "$(GREEN) Sincronizando dependencias...$(NC)"
 	@uv sync --active
 	@echo "$(GREEN) Verificando instalación de Tailwind CSS...$(NC)"
