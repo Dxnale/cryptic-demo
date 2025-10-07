@@ -1,5 +1,3 @@
-
-
 def format_analysis_output(text_to_analyze, analysis):
     """
     Formatea el resultado del análisis para mostrar en terminal.
@@ -20,7 +18,9 @@ def format_analysis_output(text_to_analyze, analysis):
     status_icon = status_icons.get(analysis.protection_status.value, "❓")
 
     # Preview del dato
-    data_preview = (text_to_analyze[:50] + "...") if len(text_to_analyze) > 50 else text_to_analyze
+    data_preview = (
+        (text_to_analyze[:50] + "...") if len(text_to_analyze) > 50 else text_to_analyze
+    )
     output_lines.append(f"{status_icon} {data_preview}")
 
     # Información principal
@@ -33,7 +33,9 @@ def format_analysis_output(text_to_analyze, analysis):
         output_lines.append("   ⚠️  Datos sensibles encontrados:")
         for match in analysis.sensitive_analysis.matches[:5]:  # Máximo 5
             validation_icon = "✓" if match.is_validated else "⚠"
-            output_lines.append(f"     {validation_icon} {match.data_type.value}: {match.matched_text}")
+            output_lines.append(
+                f"     {validation_icon} {match.data_type.value}: {match.matched_text}"
+            )
 
         # Si hay más matches
         if len(analysis.sensitive_analysis.matches) > 5:
@@ -44,7 +46,9 @@ def format_analysis_output(text_to_analyze, analysis):
     if analysis.hash_analysis and analysis.hash_analysis.possible_types:
         hash_type = analysis.hash_analysis.possible_types[0][0].value
         confidence = analysis.hash_analysis.possible_types[0][1]
-        output_lines.append(f"   🔒 Hash detectado: {hash_type} (confianza: {confidence:.1%})")
+        output_lines.append(
+            f"   🔒 Hash detectado: {hash_type} (confianza: {confidence:.1%})"
+        )
 
     # Recomendaciones
     if analysis.recommendations:

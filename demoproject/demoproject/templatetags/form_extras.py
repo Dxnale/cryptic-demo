@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
+
 @register.filter(name="add_class")
 def add_class(field, css_classes):
     """Return the field rendered with additional CSS classes.
@@ -13,6 +14,7 @@ def add_class(field, css_classes):
     existing = field.field.widget.attrs.get("class", "").strip()
     combined = f"{existing} {css_classes}".strip() if existing else css_classes
     return field.as_widget(attrs={**field.field.widget.attrs, "class": combined})
+
 
 @register.filter(name="label_class")
 def label_class(field, css_classes):
