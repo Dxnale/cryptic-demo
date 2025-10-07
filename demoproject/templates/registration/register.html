@@ -1,5 +1,4 @@
 {% extends "layout.html" %}
-{% load form_extras %}
 
 {% block title %}Registro{% endblock %}
 
@@ -20,25 +19,25 @@
 
     <form method="post" class="space-y-4">
       {% csrf_token %}
-      
+
       {% for field in form %}
         <div class="form-group{% if field.errors %} has-error{% endif %}">
-          <label class="label">
+          <label for="{{ field.id_for_label }}" class="label">
             <span class="label-text">
               {{ field.label_tag }}
               {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
             </span>
           </label>
-          
+
           {% if field.errors %}
-            {{ field|add_class:"input input-bordered input-error w-full" }}
+            {{ field.as_widget }}
             <div class="text-red-500 text-sm mt-1">
               {{ field.errors|join:", " }}
             </div>
           {% else %}
-            {{ field|add_class:"input input-bordered w-full" }}
+            {{ field.as_widget }}
           {% endif %}
-          
+
           {% if field.help_text %}
             <div class="text-sm text-gray-500 mt-1">{{ field.help_text }}</div>
           {% endif %}
@@ -53,7 +52,7 @@
     </form>
 
     <div class="divider">¿Ya tienes una cuenta?</div>
-    
+
     <a href="{% url 'login' %}" class="btn btn-ghost text-green-400 hover:text-green-500">
       Iniciar sesión
     </a>

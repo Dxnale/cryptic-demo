@@ -37,6 +37,9 @@ start:
 	else \
 		echo "$(GREEN)  Tailwind CSS ya está instalado$(NC)"; \
 	fi
+	@echo "$(YELLOW)  Generando CSS con Tailwind...$(NC)"
+	@cd demoproject/static/css && ./tailwindcss -i input.css -o output.css
+	@echo "$(GREEN)  CSS generado correctamente$(NC)"
 	@if [ -d ".venv" ]; then \
 		echo "$(YELLOW)  Activando entorno virtual existente...$(NC)"; \
 		export PATH=".venv/bin:$$PATH" && echo "$(GREEN)Entorno virtual listo$(NC)"; \
