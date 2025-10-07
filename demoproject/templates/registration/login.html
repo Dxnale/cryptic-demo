@@ -1,5 +1,4 @@
 {% extends "layout.html" %}
-{% load form_extras %}
 {% block title %}Login{% endblock %}
 {% block content %}
 <main class="max-w-4xl my-3 py-8 mx-auto sm:px-60 font-mono">
@@ -21,12 +20,12 @@
 
     {% for field in form %}
       <div class="form-group{% if field.errors %} has-error{% endif %}">
-        {{ field|label_class:"label-text" }}
+        <label for="{{ field.id_for_label }}" class="label-text">{{ field.label_tag }}</label>
 
         {% if field.errors %}
-          {{ field|add_class:"input input-bordered input-error" }}
+          {{ field.as_widget }}
         {% else %}
-          {{ field|add_class:"input input-bordered" }}
+          {{ field.as_widget }}
         {% endif %}
 
         {% if field.help_text %}

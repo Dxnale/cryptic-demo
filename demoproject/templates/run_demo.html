@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% load static %}
 
-{% block title %}Terminal{% endblock %}
+{% block title %}Terminal {{ block.super }}{% endblock %}
 
 {% block content %}
 <main class="max-w-4xl my-3 p-8 mx-auto font-mono">
     <!-- Terminal -->
-    <div class="card bg-neutral text-neutral-content shadow-2xl">
+    <div class="card bg-neutral text-neutral-content shadow-2xl border-2 border-green-400">
         <div class="card-body p-0">
             <!-- Terminal header -->
             <div class="bg-base-300 px-4 py-2 flex items-center gap-2 rounded-t-2xl border-b border-base-content/10">
