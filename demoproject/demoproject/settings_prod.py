@@ -2,21 +2,21 @@ import os
 
 # Load environment variables from .env file if it exists
 from dotenv import load_dotenv
+from .settings import *
 
 load_dotenv()
 
 # Import base settings
-from .settings import *
 
 # Override with production settings
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    raise ValueError("DJANGO_SECRET_KEY environment variable is required")
 
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
+
+ROOT_URLCONF = os.getenv("ROOT_URLCONF", "demoproject.urls")
 
 # Security settings for production
 SECURE_SSL_REDIRECT = True
