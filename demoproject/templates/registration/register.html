@@ -9,7 +9,7 @@
     {% if messages %}
       <div class="space-y-2">
         {% for message in messages %}
-          <div class="alert alert-{% if message.tags == 'error' %}error{% else %}sccess{% endif %} p-3 rounded">
+          <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %} p-3 rounded">
             {{ message }}
           </div>
         {% endfor %}
