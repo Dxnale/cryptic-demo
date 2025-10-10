@@ -4,28 +4,37 @@ from django.db import migrations
 
 USERS = [["Dan", "332141ade", True, True], ["lyanez", "lyanez123", False, False]]
 
+
 def create_default_users(apps, _):
-    User = apps.get_model('auth', 'User')
-    users_data = [{"username": user[0], "password": user[1], "is_superuser": user[2], "is_staff": user[3]} for user in USERS]
+    User = apps.get_model("auth", "User")
+    users_data = [
+        {
+            "username": user[0],
+            "password": user[1],
+            "is_superuser": user[2],
+            "is_staff": user[3],
+        }
+        for user in USERS
+    ]
     for data in users_data:
         if not User.objects.filter(username=data["username"]).exists():
             user = User.objects.create_user(
-                username=data["username"],
-                password=data["password"]
+                username=data["username"], password=data["password"]
             )
             user.is_superuser = data["is_superuser"]
             user.is_staff = data["is_staff"]
             user.save()
 
+
 def delete_default_users(apps, _):
-    User = apps.get_model('auth', 'User')
+    User = apps.get_model("auth", "User")
     User.objects.filter(username__in=[user[0] for user in USERS]).delete()
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('demoproject', '__first__'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("demoproject", "__first__"),
     ]
 
     operations = [
