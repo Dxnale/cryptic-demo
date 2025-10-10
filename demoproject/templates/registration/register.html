@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Registro{% endblock %}
+{% block title %}Registro {{ block.super }}{% endblock %}
 
 {% block content %}
 <main class="max-w-4xl my-3 py-8 mx-auto sm:px-60 font-mono">
@@ -9,7 +9,7 @@
     {% if messages %}
       <div class="space-y-2">
         {% for message in messages %}
-          <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %} p-3 rounded">
+          <div class="alert alert-{% if message.tags == 'error' %}error{% else %}sccess{% endif %} p-3 rounded">
             {{ message }}
           </div>
         {% endfor %}
