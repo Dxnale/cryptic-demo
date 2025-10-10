@@ -7,6 +7,8 @@
         <title>{% block title %}- Cryptic{% endblock %}</title>
         {% load static %}
         <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+        {% load static %}
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}" />
         {% include "includes/index_style.html" %}
 </head>
 <body class="min-h-screen terminal-bg text-green-400">

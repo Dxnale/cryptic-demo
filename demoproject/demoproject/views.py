@@ -6,9 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .utils import get_help_text, format_analysis_output
+from .forms import CustomUserCreationForm
 
 try:
     from django_ratelimit.decorators import ratelimit
@@ -41,7 +41,7 @@ def home(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -53,7 +53,7 @@ def register(request):
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
 
     return render(request, "registration/register.html", {"form": form})
 
