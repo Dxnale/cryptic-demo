@@ -35,7 +35,7 @@ DEBUG = True
 
 REGISTER_PASSWORD = os.getenv("REGISTER_PASSWORD")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "cryptic-demo.onrender.com"]
+ALLOWED_HOSTS = ["10.124.70.164", "localhost", "127.0.0.1", "cryptic-demo.onrender.com"]
 
 # Application definition
 
